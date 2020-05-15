@@ -22,6 +22,26 @@ const Utils = {
   sleep: (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   },
+  escape: (str) => {
+    let tagsToReplace = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+    };
+    return str.replace(/[&<>]/g, function (tag) {
+      return tagsToReplace[tag] || tag;
+    });
+  },
+  unescape: (str) => {
+    let tagsToReplace = {
+      "&amp;": "&",
+      "&lt;": "<",
+      "&gt;": ">",
+    };
+    return str.replace(/[&<>]/g, function (tag) {
+      return tagsToReplace[tag] || tag;
+    });
+  },
 };
 
 export default Utils;

@@ -25,6 +25,8 @@ MAP_APIKEY = google maps api key
 NODE_ENV= development/production
 API_URL= URL of the rest API
 
+run command `npm install` in project folder
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.<br />

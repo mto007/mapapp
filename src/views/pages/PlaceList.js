@@ -3,7 +3,6 @@
 // --------------------------------
 import GoogleMapApi from "../components/GoogleMapApi";
 import Utils from "../../common/Utils";
-import validator from "validator";
 import "../../styles/Common.scss";
 
 let getPlaceList = async (searchterm, filter) => {
@@ -13,12 +12,10 @@ let getPlaceList = async (searchterm, filter) => {
       "Content-Type": "application/json",
     },
   };
-
   const condition =
     searchterm !== undefined && searchterm !== "5eb6838e87df2b287809609b"
       ? "?title=" + searchterm
       : "";
-
   try {
     const response = await fetch(
       `${process.env.API_URL}places${condition}`,
@@ -29,7 +26,6 @@ let getPlaceList = async (searchterm, filter) => {
     let isFiltering = false;
     if (filter !== undefined && filter !== "") {
       //?open=true&filter=bar,nightclub,pizza
-
       const currentDate = new Date();
       const currentHours = Number.parseInt(currentDate.getHours());
       const currentMinutes = Number.parseInt(currentDate.getMinutes());
@@ -106,68 +102,75 @@ let PlaceList = {
     let keywords = await getKeywordList();
 
     let view = /*html*/ `
-      <div class="w3-container" >
-         <section>
-             <h1> Places </h1>
-             </br>
-             <button   class="w3-btn w3-blue w3-round" id="addButton">Add new place</button></br>
-             <label>Search places by title:</>
-             <input class="input" id="searchTerm" type="text" placeholder="Title"  />
-             <button  class="w3-btn w3-blue w3-round" id="searchButton"><i class="fa fa-search"></i> Search by title</button>
-            
-             <label for="keywords">Choose keywords:</label>
-<select id="keywordsSelect" name="keywords" multiple>
-${keywords.map(
-  (keyword) => `
-  <option value=${keyword._id}>${unescape(keyword.label)}</option>`
-)}
-</select>
-<input type="checkbox" id="openCheckbox">Only open at the moment</input>
-<button   class="w3-btn w3-blue w3-round" id="filterButton">Filter</button>
-</br>
-             </section>
-             <section>
-            
-             </div><div>
-  <table id="placesTable" class="w3-table w3-striped w3-bordered">
-  <tbody>
-    <tr>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Latitude</th>
-      <th>Longitude</th>
-      <th>Opening hours</th>
-      <th>Keywords</th>
-    </tr>
-    ${places
-      .map(
-        (place) =>
-          `<tr id=${place._id}><td id="title">${unescape(
-            place.title
-          )}</td><td id="descr">${unescape(
-            place.description
-          )}</td><td id="latitude">${place.latitude}</td><td id="longitude">${
-            place.longitude
-          }</td><td id="times">${place.openhoursstart} - ${
-            place.openhoursend
-          }</td>
-        </td><td id="times">${place.keywords.map((k) => {
-          const kw = keywords.find((w) => w._id == k);
-          return kw !== undefined ? unescape(kw.label) : "";
-        })}</td>
-        <td><button  class="w3-btn w3-blue w3-round" id="editButton_${
-          place._id
-        }">Edit</button></td><td><button class="w3-btn w3-blue w3-round" id="deleteButton_${
-            place._id
-          }">Delete</button></td></tr>`
-      )
-      .join("")}
-    </tbody>
-    </table>
-  </section>
-  </div>
-  <div>
-  <div id="map"></div></div>
+    <section>
+      <div class="w3-container">
+        
+            <h1> Places </h1>
+            </br>
+            <button   class="w3-btn w3-blue w3-round" id="addButton">Add new place</button></br>
+            <label>Search places by title:</>
+            <input class="input" id="searchTerm" type="text" placeholder="Title"  />
+            <button  class="w3-btn w3-blue w3-round" id="searchButton"><i class="fa fa-search"></i> Search by title</button>
+            <label for="keywords">Choose keywords:</label>
+            <select id="keywordsSelect" name="keywords" multiple>
+            ${keywords.map(
+              (keyword) => `
+            <option value=${keyword._id}>${Utils.unescape(
+                keyword.label
+              )}</option>`
+            )}
+            </select>
+            <input type="checkbox" id="openCheckbox">Only open at the moment</input>
+            <button   class="w3-btn w3-blue w3-round" id="filterButton">Filter</button>
+            </br>
+      </div>
+    </section>
+    <section>
+      <div>
+        <table id="placesTable" class="w3-table w3-striped w3-bordered">
+          <tbody>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Latitude</th>
+              <th>Longitude</th>
+              <th>Opening hours</th>
+              <th>Keywords</th>
+            </tr>
+          ${places
+            .map(
+              (place) =>
+                `<tr id=${place._id}><td id="title">${Utils.unescape(
+                  place.title
+                )}</td><td id="descr">${Utils.unescape(
+                  place.description
+                )}</td><td id="latitude">${
+                  place.latitude
+                }</td><td id="longitude">${
+                  place.longitude
+                }</td><td id="times">${place.openhoursstart} - ${
+                  place.openhoursend
+                }</td>
+                </td><td id="times">${place.keywords.map((k) => {
+                  const kw = keywords.find((w) => w._id == k);
+                  return kw !== undefined ? Utils.unescape(kw.label) : "";
+                })}</td>
+                <td><button  class="w3-btn w3-blue w3-round" id="editButton_${
+                  place._id
+                }">Edit</button></td><td><button class="w3-btn w3-blue w3-round" id="deleteButton_${
+                  place._id
+                }">Delete</button></td></tr>`
+            )
+            .join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section>
+      <div>
+      <div id="map"></div>
+      </div>
+    </section>
      `;
     return view;
   },
@@ -261,19 +264,23 @@ ${keywords.map(
     // search by title event
     document.getElementById("searchButton").addEventListener("click", () => {
       // reload the page with search term
-      const searchTerm = escape(document.getElementById("searchTerm").value);
+      const searchTerm = Utils.escape(
+        document.getElementById("searchTerm").value
+      );
       window.location.href = "#/list/" + searchTerm;
     });
 
     // filter by keywords or currentlyOpen restaurants event
     document.getElementById("filterButton").addEventListener("click", () => {
-      let open = document.getElementById("openCheckbox").checked;
+      const open = document.getElementById("openCheckbox").checked;
       // page with search term
-      let selectElement = document.getElementById("keywordsSelect");
-      let selectedValues = Array.from(selectElement.selectedOptions).map(
+      const selectElement = document.getElementById("keywordsSelect");
+      const selectedValues = Array.from(selectElement.selectedOptions).map(
         (option) => option.value
       );
-      let searchTerm = escape(document.getElementById("searchTerm").value);
+      let searchTerm = Utils.escape(
+        document.getElementById("searchTerm").value
+      );
       searchTerm = searchTerm === "" ? "5eb6838e87df2b287809609b" : searchTerm;
       window.location.href =
         "#/list/" +

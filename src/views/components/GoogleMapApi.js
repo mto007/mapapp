@@ -14,7 +14,6 @@ const GoogleMapApi = (el, data, markers) => {
       GoogleMap(el, data, markers);
     };
   } else {
-    console.log("render again" + data);
     if (data !== undefined) {
       GoogleMap(el, data, markers);
     }
